@@ -1,0 +1,68 @@
+# Model registry. Edit freely.
+#
+# price_in / price_out        = what you actually pay per 1M tokens (0 on free tiers)
+# equiv_in / equiv_out        = "equivalent cost" reference price per 1M tokens, so savings math is
+#                               meaningful on free tiers. Defaults come from reference_prices[tier].
+#                               These are ILLUSTRATIVE numbers, not invoices.
+# rpm / tpm (providers)       = provider-side limits enforced by the gateway's token buckets.
+#                               The values below are conservative PLACEHOLDERS: free-tier limits change
+#                               often, so set them to what your account dashboard says.
+
+reference_prices:           # USD per 1M tokens
+  cheap:    {in: 0.15, out: 0.60}
+  balanced: {in: 0.50, out: 2.00}
+  strong:   {in: 2.50, out: 10.00}
+
+providers:
+  mock:   {type: mock, rpm: 6000, tpm: 5000000}
+  mock2:  {type: mock, rpm: 6000, tpm: 5000000}
+  groq:
+    type: openai_compat
+    base_url: https://api.groq.com/openai/v1
+    api_key_env: GROQ_API_KEY
+    enabled_env: GROQ_API_KEY
+    rpm: 30
+    tpm: 6000
+  gemini:
+    type: openai_compat
+    base_url: https://generativelanguage.googleapis.com/v1beta/openai
+    api_key_env: GEMINI_API_KEY
+    enabled_env: GEMINI_API_KEY
+    rpm: 10
+    tpm: 250000
+  ollama:
+    type: openai_compat
+    base_url: http://localhost:11434/v1
+    base_url_env: OLLAMA_BASE_URL
+    enabled_env: ENABLE_OLLAMA
+    rpm: 600
+    tpm: 2000000
+  openai:
+    type: openai_compat
+    base_url: https://api.openai.com/v1
+    api_key_env: OPENAI_API_KEY
+    enabled_env: OPENAI_API_KEY
+    rpm: 500
+    tpm: 200000
+
+models:
+  - {id: mock-cheap,     provider: mock,  upstream: mock-cheap,    tier: cheap,    context_window: 128000, latency_ms: 4}
+  - {id: mock-balanced,  provider: mock,  upstream: mock-balanced, tier: balanced, context_window: 128000, latency_ms: 8}
+  - {id: mock-strong,    provider: mock,  upstream: mock-strong,   tier: strong,   context_window: 128000, latency_ms: 12}
+  - {id: mock2-cheap,    provider: mock2, upstream: mock-cheap,    tier: cheap,    context_window: 128000, latency_ms: 5,  equiv_in: 0.17, equiv_out: 0.66}
+  - {id: mock2-balanced, provider: mock2, upstream: mock-balanced, tier: balanced, context_window: 128000, latency_ms: 9,  equiv_in: 0.55, equiv_out: 2.20}
+  - {id: mock2-strong,   provider: mock2, upstream: mock-strong,   tier: strong,   context_window: 128000, latency_ms: 13, equiv_in: 2.75, equiv_out: 11.0}
+
+  - {id: groq-llama-8b,  provider: groq, upstream: llama-3.1-8b-instant,    aliases: [llama-3.1-8b-instant],    tier: cheap,  context_window: 131072, latency_ms: 150}
+  - {id: groq-llama-70b, provider: groq, upstream: llama-3.3-70b-versatile, aliases: [llama-3.3-70b-versatile], tier: strong, context_window: 131072, latency_ms: 300}
+  - {id: gemini-flash-lite, provider: gemini, upstream: gemini-2.5-flash-lite, aliases: [gemini-2.5-flash-lite], tier: cheap,    context_window: 1000000, latency_ms: 300}
+  - {id: gemini-flash,      provider: gemini, upstream: gemini-2.5-flash,      aliases: [gemini-2.5-flash],      tier: balanced, context_window: 1000000, latency_ms: 500}
+  - {id: ollama-llama3.1,   provider: ollama, upstream: "llama3.1", aliases: [llama3.1, ollama/llama3.1], tier: cheap, context_window: 8192, latency_ms: 1500, supports_tools: false}
+  - {id: openai-gpt-4o-mini, provider: openai, upstream: gpt-4o-mini, aliases: [gpt-4o-mini], tier: cheap,  context_window: 128000, latency_ms: 400, price_in: 0.15, price_out: 0.60}
+  - {id: openai-gpt-4o,      provider: openai, upstream: gpt-4o,      aliases: [gpt-4o],      tier: strong, context_window: 128000, latency_ms: 700, price_in: 2.50, price_out: 10.0}
+
+# Per-tier fallback chains (first = preferred). Disabled providers are skipped automatically.
+fallbacks:
+  cheap:    [groq-llama-8b, gemini-flash-lite, ollama-llama3.1, openai-gpt-4o-mini, mock-cheap, mock2-cheap]
+  balanced: [gemini-flash, groq-llama-70b, ollama-llama3.1, mock-balanced, mock2-balanced]
+  strong:   [groq-llama-70b, gemini-flash, ollama-llama3.1, openai-gpt-4o, mock-strong, mock2-strong]

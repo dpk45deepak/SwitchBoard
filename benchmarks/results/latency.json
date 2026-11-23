@@ -1,0 +1,54 @@
+{
+  "provider_limit_rpm": 600,
+  "interactive_rps": 4,
+  "interactive_alone": {
+    "seconds": 20,
+    "interactive_ok": 80,
+    "interactive_429": 0,
+    "interactive_errors": 0,
+    "p50_ms": 23.19517600000154,
+    "p95_ms": 25.376736000001898,
+    "p99_ms": 26.76538200000067,
+    "bulk_completed": 0,
+    "bulk_per_s": 0.0
+  },
+  "priority_on": {
+    "seconds": 70,
+    "interactive_ok": 280,
+    "interactive_429": 0,
+    "interactive_errors": 0,
+    "p50_ms": 23.46866499999578,
+    "p95_ms": 25.094500999998104,
+    "p99_ms": 25.483852999997225,
+    "bulk_completed": 369,
+    "bulk_per_s": 5.271428571428571,
+    "max_requests_in_any_60s_window": 558,
+    "provider_side_429s": 0,
+    "limiter_rejections": {
+      "mock": 28094
+    }
+  },
+  "priority_off": {
+    "seconds": 20,
+    "interactive_ok": 29,
+    "interactive_429": 51,
+    "interactive_errors": 0,
+    "p50_ms": 1075.3128409999988,
+    "p95_ms": 1958.1923349999925,
+    "p99_ms": 1961.4492949999942,
+    "bulk_completed": 226,
+    "bulk_per_s": 11.3
+  },
+  "failover": {
+    "requests": 1432,
+    "success_rate_overall": 1.0,
+    "success_rate_during_outage": 1.0,
+    "served_by_fallback_during_outage": 1.0,
+    "p95_ms_before": 25.0884049999911,
+    "p95_ms_during_outage": 25.088114000027417,
+    "primary_calls_during_outage": 0,
+    "seconds_until_primary_serves_again": 3.1410682089999966,
+    "breaker_cooldown_s": 5.0,
+    "outage_seconds": 12
+  }
+}

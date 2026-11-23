@@ -1,0 +1,34 @@
+{
+  "tasks": 5000,
+  "seconds": 10.64840894000001,
+  "counts": {
+    "pending": 0,
+    "leased": 0,
+    "done": 5000,
+    "dead": 0,
+    "cancelled": 0
+  },
+  "distinct_charged_tasks": 5000,
+  "tasks_charged_more_than_once": 0,
+  "results_returned": 5000,
+  "results_succeeded": 5000,
+  "provider_429s": 14403,
+  "provider_injected_errors": 528,
+  "provider_calls": 19931,
+  "tasks_needing_more_than_one_attempt": 3613,
+  "worker_stats": [
+    {
+      "done": 2135,
+      "retried": 3682,
+      "dead": 0,
+      "deferred": 32
+    },
+    {
+      "done": 2865,
+      "retried": 4258,
+      "dead": 0,
+      "deferred": 20
+    }
+  ],
+  "no_lost_no_duplicated": true
+}

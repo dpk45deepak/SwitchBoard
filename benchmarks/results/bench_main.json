@@ -1,0 +1,204 @@
+{
+  "n": 5000,
+  "routing_accuracy": [
+    {
+      "classifier": "heuristic",
+      "easy_to_cheap": 1.0,
+      "hard_not_cheap": 0.9164237123420796,
+      "hard_to_strong": 0.6627793974732751,
+      "n_easy": 1471,
+      "n_hard": 1029
+    },
+    {
+      "classifier": "learned",
+      "easy_to_cheap": 1.0,
+      "hard_not_cheap": 1.0,
+      "hard_to_strong": 1.0,
+      "n_easy": 1471,
+      "n_hard": 1029
+    }
+  ],
+  "naive_sequential": {
+    "tasks": 5000,
+    "seconds": 89.23503613100002,
+    "tasks_per_min": 3361.9082034055546,
+    "equiv_cost_usd": 6.891745000000019,
+    "client_429s": 99,
+    "quality": 1.0,
+    "upstream_calls": 5099,
+    "saved_pct_vs_naive": 0.0,
+    "throughput_x_vs_naive_seq": 1.0
+  },
+  "naive_parallel64": {
+    "tasks": 5000,
+    "seconds": 60.50316329800012,
+    "tasks_per_min": 4958.418430494133,
+    "equiv_cost_usd": 6.891745000000018,
+    "client_429s": 64,
+    "quality": 1.0,
+    "upstream_calls": 5064,
+    "saved_pct_vs_naive": 1.1102230246251565e-14,
+    "throughput_x_vs_naive_seq": 1.4748821593258676
+  },
+  "gw_plain": {
+    "tasks": 5000,
+    "completed": 5000,
+    "seconds": 107.80149419899999,
+    "tasks_per_min": 2782.8927811167846,
+    "equiv_cost_usd": 6.891745,
+    "ledger_baseline_usd": 6.891745,
+    "cache_hit_rate": 0.0,
+    "cache_exact_hits": 0,
+    "cache_semantic_hits": 0,
+    "quality": 1.0,
+    "upstream_calls": 5000,
+    "provider_429s_seen_by_gateway": 0,
+    "client_429s": 0,
+    "tier_mix": {
+      "mock-strong": 5000
+    },
+    "worker": {
+      "done": 5000,
+      "retried": 0,
+      "dead": 0,
+      "deferred": 0
+    },
+    "saved_pct_vs_naive": 2.6645352591003757e-13,
+    "throughput_x_vs_naive_seq": 0.827771792905518
+  },
+  "gw_cache_only": {
+    "tasks": 5000,
+    "completed": 5000,
+    "seconds": 76.5115378349999,
+    "tasks_per_min": 3920.977260278857,
+    "equiv_cost_usd": 4.950105,
+    "ledger_baseline_usd": 6.891745,
+    "cache_hit_rate": 0.2816,
+    "cache_exact_hits": 1376,
+    "cache_semantic_hits": 0,
+    "quality": 1.0,
+    "upstream_calls": 3592,
+    "provider_429s_seen_by_gateway": 0,
+    "client_429s": 0,
+    "tier_mix": {
+      "mock-strong": 5000
+    },
+    "worker": {
+      "done": 5000,
+      "retried": 0,
+      "dead": 0,
+      "deferred": 0
+    },
+    "saved_pct_vs_naive": 28.173416166733013,
+    "throughput_x_vs_naive_seq": 1.1662951582993775
+  },
+  "gw_routing_only": {
+    "tasks": 5000,
+    "completed": 5000,
+    "seconds": 107.79408155299984,
+    "tasks_per_min": 2783.0841515403326,
+    "equiv_cost_usd": 4.03221155,
+    "ledger_baseline_usd": 6.892525,
+    "cache_hit_rate": 0.0,
+    "cache_exact_hits": 0,
+    "cache_semantic_hits": 0,
+    "quality": 0.9496,
+    "upstream_calls": 5000,
+    "provider_429s_seen_by_gateway": 0,
+    "client_429s": 0,
+    "tier_mix": {
+      "mock-cheap": 3133,
+      "mock-strong": 1351,
+      "mock-balanced": 516
+    },
+    "worker": {
+      "done": 5000,
+      "retried": 0,
+      "dead": 0,
+      "deferred": 0
+    },
+    "saved_pct_vs_naive": 41.492154019047575,
+    "throughput_x_vs_naive_seq": 0.8278287160610504
+  },
+  "gw_cache_plus_routing": {
+    "tasks": 5000,
+    "completed": 5000,
+    "seconds": 76.50293939900007,
+    "tasks_per_min": 3921.417952784193,
+    "equiv_cost_usd": 2.9147424,
+    "ledger_baseline_usd": 6.892525,
+    "cache_hit_rate": 0.2816,
+    "cache_exact_hits": 1375,
+    "cache_semantic_hits": 0,
+    "quality": 0.9496,
+    "upstream_calls": 3592,
+    "provider_429s_seen_by_gateway": 0,
+    "client_429s": 0,
+    "tier_mix": {
+      "mock-cheap": 3133,
+      "mock-strong": 1351,
+      "mock-balanced": 516
+    },
+    "worker": {
+      "done": 5000,
+      "retried": 0,
+      "dead": 0,
+      "deferred": 0
+    },
+    "saved_pct_vs_naive": 57.70675786756486,
+    "throughput_x_vs_naive_seq": 1.1664262423381653
+  },
+  "gw_cache_plus_learned_routing": {
+    "tasks": 5000,
+    "completed": 5000,
+    "seconds": 76.50919452100015,
+    "tasks_per_min": 3921.0973514778843,
+    "equiv_cost_usd": 4.01930365,
+    "ledger_baseline_usd": 6.892525,
+    "cache_hit_rate": 0.2816,
+    "cache_exact_hits": 1380,
+    "cache_semantic_hits": 0,
+    "quality": 0.9844,
+    "upstream_calls": 3592,
+    "provider_429s_seen_by_gateway": 0,
+    "client_429s": 0,
+    "tier_mix": {
+      "mock-cheap": 2953,
+      "mock-strong": 2047
+    },
+    "worker": {
+      "done": 5000,
+      "retried": 0,
+      "dead": 0,
+      "deferred": 0
+    },
+    "saved_pct_vs_naive": 41.679449109042935,
+    "throughput_x_vs_naive_seq": 1.1663308794409915
+  },
+  "gw_cache_semantic_ON_hashing_embedder": {
+    "tasks": 5000,
+    "completed": 5000,
+    "seconds": 72.02405449800017,
+    "tasks_per_min": 4165.275088870898,
+    "equiv_cost_usd": 4.84967,
+    "ledger_baseline_usd": 6.8917325,
+    "cache_hit_rate": 0.322,
+    "cache_exact_hits": 1312,
+    "cache_semantic_hits": 268,
+    "quality": 0.9464,
+    "upstream_calls": 3390,
+    "provider_429s_seen_by_gateway": 0,
+    "client_429s": 0,
+    "tier_mix": {
+      "mock-strong": 5000
+    },
+    "worker": {
+      "done": 5000,
+      "retried": 0,
+      "dead": 0,
+      "deferred": 0
+    },
+    "saved_pct_vs_naive": 29.63073938458277,
+    "throughput_x_vs_naive_seq": 1.238961576836496
+  }
+}

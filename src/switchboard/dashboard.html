@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Switchboard dashboard</title>
+<style>
+:root{--bg:#fff;--fg:#1a1a1a;--mut:#666;--card:#f6f6f4;--line:#2563eb;--line2:#d97706;--ok:#15803d;--warn:#b45309;--bad:#b91c1c}
+@media (prefers-color-scheme:dark){:root{--bg:#161616;--fg:#eee;--mut:#999;--card:#222;--line:#60a5fa;--line2:#fbbf24;--ok:#4ade80;--warn:#fbbf24;--bad:#f87171}}
+body{font:14px system-ui,sans-serif;background:var(--bg);color:var(--fg);margin:0;padding:16px;max-width:1100px;margin:auto}
+h1{font-size:18px;margin:0 0 4px}.sub{color:var(--mut);margin-bottom:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.card{background:var(--card);border-radius:10px;padding:12px}.card h2{font-size:12px;color:var(--mut);margin:0 0 6px;font-weight:500;text-transform:uppercase;letter-spacing:.04em}
+.big{font-size:26px;font-weight:600}canvas{width:100%;height:90px;display:block}
+.pill{display:inline-block;padding:2px 8px;border-radius:99px;font-size:12px;margin:2px 4px 2px 0;background:var(--bg)}
+.closed{color:var(--ok)}.half_open{color:var(--warn)}.open{color:var(--bad)}input{padding:4px 6px;width:180px}
+</style></head><body>
+<h1>Switchboard</h1>
+<div class="sub">Live from <code>/admin/stats</code> (refreshes every 2 s) · admin key: <input id="key" type="password" placeholder="X-Admin-Key (if set)"> <span id="err" style="color:var(--bad)"></span></div>
+<div class="grid">
+ <div class="card"><h2>Savings vs naive baseline</h2><div class="big" id="saved">–</div><div class="sub" id="saved2"></div></div>
+ <div class="card"><h2>Cache hit rate</h2><div class="big" id="hit">–</div><div class="sub" id="hit2"></div></div>
+ <div class="card"><h2>Queue</h2><div class="big" id="q">–</div><div class="sub" id="q2"></div></div>
+ <div class="card"><h2>Providers (circuit breakers)</h2><div id="br"></div></div>
+ <div class="card"><h2>Equivalent spend per bucket ($)</h2><canvas id="c_spend"></canvas></div>
+ <div class="card"><h2>Cache hit rate over time</h2><canvas id="c_hit"></canvas></div>
+ <div class="card"><h2>Online latency p50 / p95 (ms)</h2><canvas id="c_lat"></canvas></div>
+ <div class="card"><h2>Requests per bucket</h2><canvas id="c_req"></canvas></div>
+</div>
+<script>
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n);
+function draw(id,series){const c=document.getElementById(id),r=devicePixelRatio||1;c.width=c.clientWidth*r;c.height=c.clientHeight*r;
+ const g=c.getContext('2d');g.scale(r,r);const W=c.clientWidth,H=c.clientHeight;g.clearRect(0,0,W,H);
+ const all=series.flatMap(s=>s.d.filter(v=>v!=null));if(!all.length)return;const mx=Math.max(...all)||1;
+ series.forEach(s=>{g.strokeStyle=css(s.c);g.lineWidth=2;g.beginPath();let st=false;
+  s.d.forEach((v,i)=>{if(v==null)return;const x=s.d.length<2?0:i/(s.d.length-1)*W,y=H-4-(v/mx)*(H-8);st?g.lineTo(x,y):g.moveTo(x,y);st=true});g.stroke()});
+ g.fillStyle=css('--mut');g.font='10px sans-serif';g.fillText('max '+mx.toPrecision(3),2,10)}
+async function tick(){try{const k=document.getElementById('key').value;
+ const r=await fetch('/admin/stats',{headers:k?{'X-Admin-Key':k}:{}});if(!r.ok)throw new Error(r.status+' '+r.statusText);
+ const s=await r.json(),t=s.timeseries;document.getElementById('err').textContent='';
+ const sv=s.savings;document.getElementById('saved').textContent=sv.saved_pct.toFixed(1)+'%';
+ document.getElementById('saved2').textContent='$'+sv.saved_usd.toFixed(4)+' saved of $'+sv.baseline.toFixed(4)+' baseline ('+sv.requests+' req)';
+ document.getElementById('hit').textContent=(s.cache.hit_rate*100).toFixed(1)+'%';
+ document.getElementById('hit2').textContent=s.cache.hit_exact+' exact · '+s.cache.hit_semantic+' semantic · '+s.cache.entries+' entries';
+ document.getElementById('q').textContent=s.queue.pending+s.queue.leased;
+ document.getElementById('q2').textContent=s.queue.pending+' pending · '+s.queue.leased+' in flight · '+s.queue.dead+' in DLQ';
+ document.getElementById('br').innerHTML=Object.entries(s.breakers).map(([n,b])=>'<span class="pill '+b.state+'">'+n+': '+b.state+'</span>').join('');
+ draw('c_spend',[{d:t.map(x=>x.equiv_cost),c:'--line'},{d:t.map(x=>x.saved),c:'--line2'}]);
+ draw('c_hit',[{d:t.map(x=>x.hit_rate),c:'--line'}]);
+ draw('c_lat',[{d:t.map(x=>x.p50_ms),c:'--line'},{d:t.map(x=>x.p95_ms),c:'--line2'}]);
+ draw('c_req',[{d:t.map(x=>x.requests),c:'--line'}]);
+}catch(e){document.getElementById('err').textContent=e.message}}
+tick();setInterval(tick,2000);
+</script></body></html>
